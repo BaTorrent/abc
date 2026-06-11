@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Arbitrage Live Dashboard</title>
+    <title>Crypto Arbitrage 22 Exchange Live Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #121214; color: #ffffff; padding: 40px 20px; }
@@ -20,12 +20,16 @@
         .info-box .price { font-size: 18px; color: #e0e0e0; margin-top: 5px; }
         .result-box { text-align: center; padding: 20px; border-radius: 8px; font-size: 20px; font-weight: bold; margin-bottom: 30px; }
         .no-opportunity { background-color: #3c2424; color: #ff5252; border: 1px solid #ef5350; }
-        .opportunity-found { background-color: #1b3a24; color: #00e676; border: 1px solid #00e676; }
-        .table-container { background-color: #1e1e24; border-radius: 12px; padding: 20px; border: 1px solid #2d2d38; }
+        .opportunity-found { background-color: #1b3a24; color: #00e676; border: 1px solid #00e676; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
+        
+        /* 📊 লাইভ টেবিল স্টাইল */
+        .table-container { background-color: #1e1e24; border-radius: 12px; padding: 20px; border: 1px solid #2d2d38; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
         .table-container h2 { font-size: 18px; margin-bottom: 15px; color: #00e676; border-bottom: 1px solid #2d2d38; padding-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 12px 15px; border-bottom: 1px solid #2d2d38; font-size: 14px; }
-        th { background-color: #2a2a35; color: #aaaaaa; text-transform: uppercase; font-size: 12px; }
+        th { background-color: #2a2a35; color: #aaaaaa; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:hover { background-color: #25252e; }
         .badge-buy { color: #ef5350; font-weight: bold; }
         .badge-sell { color: #00e676; font-weight: bold; }
         .status { text-align: center; margin-top: 20px; font-size: 12px; color: #777777; }
@@ -39,6 +43,7 @@
         <p>Real-Time SOL/USDT Multi-Exchange Scanner</p>
     </header>
 
+    <!-- সেরা সুযোগের বক্স দুটি -->
     <div class="dashboard-grid">
         <div class="info-box buy">
             <h3>🔴 Cheapest Buy Market</h3>
@@ -52,10 +57,12 @@
         </div>
     </div>
 
+    <!-- সিগন্যাল অ্যালার্ট বক্স -->
     <div id="result-container" class="result-box no-opportunity">
         <span id="result-text">Fetching live exchange network prices...</span>
     </div>
 
+    <!-- 📊 অল এক্সচেঞ্জ লাইভ টেবিল -->
     <div class="table-container">
         <h2>📊 Live Prices Matrix (22 Exchanges)</h2>
         <table>
@@ -84,6 +91,7 @@
             const data = await response.json();
 
             if (data.status === "success") {
+                // ১. ওপরের ড্যাশবোর্ড বক্স আপডেট
                 document.getElementById('buy-exchange').innerText = data.best_buy.toUpperCase();
                 document.getElementById('buy-price').innerText = `$${data.buy_price.toFixed(4)}`;
                 document.getElementById('sell-exchange').innerText = data.best_sell.toUpperCase();
@@ -100,9 +108,11 @@
                     resultText.innerText = "❌ No profitable gaps found after fee deductions.";
                 }
 
+                // ২. অল এক্সচেঞ্জ লাইভ টেবিল আপডেট লজিক
                 const tableBody = document.getElementById('exchange-table-body');
-                tableBody.innerHTML = ""; 
+                tableBody.innerHTML = ""; // আগের ডাটা ক্লিয়ার করা
 
+                // অবজেক্টটিকে সর্ট করে বা সরাসরি টেবিলে লুপ চালানো
                 for (const [name, info] of Object.entries(data.all_prices)) {
                     const row = `
                         <tr>
@@ -122,7 +132,7 @@
     }
 
     updateDashboard();
-    setInterval(updateDashboard, 10000);
+    setInterval(updateDashboard, 10000); // ১০ সেকেন্ড পর পর অটো আপডেট
 </script>
 
 </body>
